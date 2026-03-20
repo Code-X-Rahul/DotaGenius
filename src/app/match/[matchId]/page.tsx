@@ -6,6 +6,8 @@ import Link from "next/link";
 import StatusTimeline from "@/components/StatusTimeline";
 import MatchHeader from "@/components/match/MatchHeader";
 import Scoreboard from "@/components/match/Scoreboard";
+import LaningBreakdown from "@/components/match/LaningBreakdown";
+import GoldXpGraphs from "@/components/match/GoldXpGraphs";
 import { useJobStatus } from "@/hooks/useJobStatus";
 import { useFocusPlayer } from "@/hooks/useFocusPlayer";
 import { addRecent } from "@/hooks/useRecentMatches";
@@ -257,8 +259,9 @@ export default function MatchPage({
             radiantWin={matchData.radiantWin === true}
           />
 
-          {/* Laning Breakdown - Plan 03 */}
-          {/* Gold/XP Graphs - Plan 03 */}
+          <LaningBreakdown players={matchData.players} focusSlot={focusSlot} />
+
+          <GoldXpGraphs match={matchData} />
 
           <div className="flex flex-col gap-3 items-center pt-4">
             <button
