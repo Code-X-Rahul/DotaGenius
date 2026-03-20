@@ -28,7 +28,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Parsed replay data (hero positions, combat logs, entity snapshots) is queryable in PostgreSQL after job completes
   3. System rejects expired Match IDs (older than ~10 days) with a clear error message before attempting download
   4. Async job queue handles parsing without blocking the web server — submitting a Match ID returns immediately
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Project scaffolding, database schema, test infrastructure
+- [ ] 01-02-PLAN.md — Steam GC spike (proof-of-concept for replay_salt retrieval)
+- [ ] 01-03-PLAN.md — Backend pipeline (OpenDota client, parser client, BullMQ worker, API endpoint)
+- [ ] 01-04-PLAN.md — Frontend (landing page, status page, SSE updates)
+- [ ] 01-05-PLAN.md — Integration wiring, integration tests, end-to-end verification
 
 ### Phase 2: Match Overview
 **Goal**: Users can see meaningful match statistics immediately after analysis completes
@@ -68,7 +75,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Replay Pipeline | 0/TBD | Not started | - |
+| 1. Replay Pipeline | 0/5 | Planning complete | - |
 | 2. Match Overview | 0/TBD | Not started | - |
 | 3. Visualizations | 0/TBD | Not started | - |
 | 4. AI Analysis | 0/TBD | Not started | - |
