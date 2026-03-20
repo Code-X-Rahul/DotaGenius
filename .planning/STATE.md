@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-03-20T17:01:59.397Z"
-last_activity: 2026-03-20 — Plan 02-01 complete (data layer & API foundation)
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-20T17:06:00.000Z"
+last_activity: 2026-03-20 — Plan 02-02 complete (match header & scoreboard components)
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
-  percent: 75
+  completed_plans: 7
+  percent: 88
 ---
 
 # Project State
@@ -26,32 +26,33 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 2 of 4 (Match Overview)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-20 — Plan 02-01 complete (data layer & API foundation)
+Last activity: 2026-03-20 — Plan 02-02 complete (match header & scoreboard components)
 
-Progress: [████████░░] 75%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 5min
-- Total execution time: 28min
+- Total plans completed: 7
+- Average duration: 4.4min
+- Total execution time: 31min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-replay-pipeline | 5/5 | 22min | 4.4min |
-| 02-match-overview | 1/3 | 6min | 6min |
+| 02-match-overview | 2/3 | 9min | 4.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (4min), 01-03 (6min), 01-04 (6min), 01-05 (n/a), 02-01 (6min)
+- Last 5 plans: 01-03 (6min), 01-04 (6min), 01-05 (n/a), 02-01 (6min), 02-02 (3min)
 - Trend: Consistent
 
 *Updated after each plan completion*
 | Phase 02 P01 | 6min | 2 tasks | 10 files |
+| Phase 02-02 P02 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,9 @@ Recent decisions affecting current work:
 - [Plan 02-01]: Import dotaconstants via ESM named exports, not subpath imports
 - [Plan 02-01]: Build inverted item index (id -> data) at module load for O(1) lookups
 - [Plan 02-01]: Two-step cluster -> region lookup via cluster.json and region.json
+- [Plan 02-02]: MatchHeader uses next/image for hero icons with Steam CDN
+- [Plan 02-02]: PlayerDetail renders purchase log by item key string (not ID)
+- [Plan 02-02]: Scoreboard uses min-w-[900px] with overflow-x-auto for mobile
 
 ### Pending Todos
 
@@ -92,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T17:01:59.395Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-03-20T17:06:00.000Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
