@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-03-20T11:24:38.407Z"
-last_activity: 2026-03-20 — Roadmap created, traceability mapped
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-03-20T11:59:35Z"
+last_activity: 2026-03-20 — Plan 01-01 complete (project foundation)
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 5
+  completed_plans: 1
+  percent: 5
 ---
 
 # Project State
@@ -26,28 +26,28 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 1 of 4 (Replay Pipeline)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-20 — Roadmap created, traceability mapped
+Plan: 1 of 5 in current phase
+Status: Executing
+Last activity: 2026-03-20 — Plan 01-01 complete (project foundation)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1
+- Average duration: 6min
+- Total execution time: 6min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-replay-pipeline | 1/5 | 6min | 6min |
 
 **Recent Trend:**
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: 01-01 (6min)
+- Trend: Starting
 
 *Updated after each plan completion*
 
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - [Phase 1]: odota/parser Docker sidecar (Clarity Java) — only viable production .dem parser
 - [Phase 4]: Hybrid AI: TypeScript rules engine detects patterns, LLM only explains findings (never raw replay data to LLM)
 - [All]: OpenDota API for meta data — Dotabuff has anti-bot detection and no public API
+- [Plan 01-01]: Used Prisma 6 instead of 7 — v7 has breaking config changes (datasource url removed from schema.prisma)
+- [Plan 01-01]: Used zod v4 with zod/v4 import path
 
 ### Pending Todos
 
@@ -77,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T11:24:38.396Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-replay-pipeline/01-CONTEXT.md
+Last session: 2026-03-20T11:59:35Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: .planning/phases/01-replay-pipeline/01-01-SUMMARY.md
