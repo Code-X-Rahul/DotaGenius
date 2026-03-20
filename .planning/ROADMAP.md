@@ -45,7 +45,7 @@ Plans:
   1. User sees a match summary card showing KDA, GPM, XPM, final items, hero played, game duration, and win/loss
   2. User sees laning phase breakdown: lane assignments, CS at 10 minutes, and lane outcome for each lane
   3. User sees gold and XP graphs over time for all 10 players with visible momentum shifts
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md — Foundation: dependencies, dota constants module, match utilities, types, expanded API, unit tests
@@ -81,6 +81,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Replay Pipeline | 5/5 | Complete   | 2026-03-20 |
-| 2. Match Overview | 0/3 | Not started | - |
+| 2. Match Overview | 1/3 | In Progress|  |
 | 3. Visualizations | 0/TBD | Not started | - |
 | 4. AI Analysis | 0/TBD | Not started | - |

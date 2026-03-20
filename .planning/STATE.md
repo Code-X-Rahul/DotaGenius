@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-20T16:09:43.730Z"
-last_activity: 2026-03-20 — Plan 01-04 complete (frontend landing + status pages)
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-20T17:01:59.397Z"
+last_activity: 2026-03-20 — Plan 02-01 complete (data layer & API foundation)
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
-  percent: 80
+  total_plans: 8
+  completed_plans: 6
+  percent: 75
 ---
 
 # Project State
@@ -21,35 +21,37 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** A player enters a Match ID and gets clear, actionable insights about their gameplay — what went wrong, what went right, and what to do differently.
-**Current focus:** Phase 1 — Replay Pipeline
+**Current focus:** Phase 2 — Match Overview
 
 ## Current Position
 
-Phase: 1 of 4 (Replay Pipeline)
-Plan: 4 of 5 in current phase
+Phase: 2 of 4 (Match Overview)
+Plan: 1 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-20 — Plan 01-04 complete (frontend landing + status pages)
+Last activity: 2026-03-20 — Plan 02-01 complete (data layer & API foundation)
 
-Progress: [████████░░] 80%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 6
 - Average duration: 5min
-- Total execution time: 22min
+- Total execution time: 28min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-replay-pipeline | 4/5 | 22min | 5.5min |
+| 01-replay-pipeline | 5/5 | 22min | 4.4min |
+| 02-match-overview | 1/3 | 6min | 6min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6min), 01-02 (4min), 01-03 (6min), 01-04 (6min)
+- Last 5 plans: 01-02 (4min), 01-03 (6min), 01-04 (6min), 01-05 (n/a), 02-01 (6min)
 - Trend: Consistent
 
 *Updated after each plan completion*
+| Phase 02 P01 | 6min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -73,6 +75,9 @@ Recent decisions affecting current work:
 - [Plan 01-04]: Dark gaming theme with CSS custom properties for consistent theming
 - [Phase 01-05]: Integration tests guarded with describe.skipIf(!DATABASE_URL) for CI-friendly execution
 - [Phase 01-05]: dev:all uses concurrently for parallel Next.js + worker startup
+- [Plan 02-01]: Import dotaconstants via ESM named exports, not subpath imports
+- [Plan 02-01]: Build inverted item index (id -> data) at module load for O(1) lookups
+- [Plan 02-01]: Two-step cluster -> region lookup via cluster.json and region.json
 
 ### Pending Todos
 
@@ -87,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T16:09:43.727Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-match-overview/02-CONTEXT.md
+Last session: 2026-03-20T17:01:59.395Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None

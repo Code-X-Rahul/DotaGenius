@@ -15,9 +15,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Match Overview
 
-- [ ] **MATC-01**: User sees basic match summary (KDA, GPM, XPM, items, hero, duration, outcome)
-- [ ] **MATC-02**: User sees laning phase breakdown (lane assignments, CS at 10 min, lane outcome)
-- [ ] **MATC-03**: User sees gold/XP graphs over time for all players
+- [x] **MATC-01**: User sees basic match summary (KDA, GPM, XPM, items, hero, duration, outcome)
+- [x] **MATC-02**: User sees laning phase breakdown (lane assignments, CS at 10 min, lane outcome)
+- [x] **MATC-03**: User sees gold/XP graphs over time for all players
 
 ### Visualization
 
@@ -73,9 +73,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PIPE-01 | Phase 1 | Complete |
 | PIPE-02 | Phase 1 | Complete |
 | PIPE-03 | Phase 1 | Complete |
-| MATC-01 | Phase 2 | Pending |
-| MATC-02 | Phase 2 | Pending |
-| MATC-03 | Phase 2 | Pending |
+| MATC-01 | Phase 2 | Complete |
+| MATC-02 | Phase 2 | Complete |
+| MATC-03 | Phase 2 | Complete |
 | VIZN-01 | Phase 3 | Pending |
 | VIZN-02 | Phase 3 | Pending |
 | VIZN-03 | Phase 3 | Pending |
