@@ -70,25 +70,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PIPE-01 | — | Pending |
-| PIPE-02 | — | Pending |
-| PIPE-03 | — | Pending |
-| MATC-01 | — | Pending |
-| MATC-02 | — | Pending |
-| MATC-03 | — | Pending |
-| VIZN-01 | — | Pending |
-| VIZN-02 | — | Pending |
-| VIZN-03 | — | Pending |
-| VIZN-04 | — | Pending |
-| AIAN-01 | — | Pending |
-| AIAN-02 | — | Pending |
-| AIAN-03 | — | Pending |
+| PIPE-01 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Pending |
+| PIPE-03 | Phase 1 | Pending |
+| MATC-01 | Phase 2 | Pending |
+| MATC-02 | Phase 2 | Pending |
+| MATC-03 | Phase 2 | Pending |
+| VIZN-01 | Phase 3 | Pending |
+| VIZN-02 | Phase 3 | Pending |
+| VIZN-03 | Phase 3 | Pending |
+| VIZN-04 | Phase 3 | Pending |
+| AIAN-01 | Phase 4 | Pending |
+| AIAN-02 | Phase 4 | Pending |
+| AIAN-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-20*
-*Last updated: 2026-03-20 after initial definition*
+*Last updated: 2026-03-20 after roadmap creation*
