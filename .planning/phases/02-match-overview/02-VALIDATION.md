@@ -38,22 +38,22 @@ created: 2026-03-20
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 02-01-01 | 01 | 1 | MATC-01 | unit | `npx vitest run tests/unit/test-dota-constants.test.ts -x` | ❌ W0 | ⬜ pending |
-| 02-01-02 | 01 | 1 | MATC-01 | unit | `npx vitest run tests/unit/test-match-api.test.ts -x` | ❌ W0 | ⬜ pending |
-| 02-02-01 | 02 | 1 | MATC-02 | unit | `npx vitest run tests/unit/test-match-utils.test.ts -x` | ❌ W0 | ⬜ pending |
-| 02-02-02 | 02 | 1 | MATC-02 | unit | `npx vitest run tests/unit/test-match-utils.test.ts -x` | ❌ W0 | ⬜ pending |
-| 02-03-01 | 03 | 2 | MATC-03 | unit | `npx vitest run tests/unit/test-match-utils.test.ts -x` | ❌ W0 | ⬜ pending |
-| 02-03-02 | 03 | 2 | MATC-03 | unit | `npx vitest run tests/unit/test-match-utils.test.ts -x` | ❌ W0 | ⬜ pending |
+| 02-01-01 | 01 | 1 | MATC-01 | unit | `npx vitest run tests/unit/dota-constants.test.ts -x` | W0 | pending |
+| 02-01-02 | 01 | 1 | MATC-01 | unit | `npx vitest run tests/unit/match-api.test.ts -x` | W0 | pending |
+| 02-02-01 | 02 | 1 | MATC-02 | unit | `npx vitest run tests/unit/match-utils.test.ts -x` | W0 | pending |
+| 02-02-02 | 02 | 1 | MATC-02 | unit | `npx vitest run tests/unit/match-utils.test.ts -x` | W0 | pending |
+| 02-03-01 | 03 | 2 | MATC-03 | unit | `npx vitest run tests/unit/match-utils.test.ts -x` | W0 | pending |
+| 02-03-02 | 03 | 2 | MATC-03 | unit | `npx vitest run tests/unit/match-utils.test.ts -x` | W0 | pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: pending / green / red / flaky*
 
 ---
 
 ## Wave 0 Requirements
 
-- [ ] `tests/unit/test-dota-constants.test.ts` — stubs for hero/item lookup correctness (MATC-01)
-- [ ] `tests/unit/test-match-utils.test.ts` — stubs for lane classification, CS@10 extraction, data transforms (MATC-02, MATC-03)
-- [ ] `tests/unit/test-match-api.test.ts` — stubs for expanded API response serialization (MATC-01)
+- [ ] `tests/unit/dota-constants.test.ts` — stubs for hero/item lookup correctness (MATC-01)
+- [ ] `tests/unit/match-utils.test.ts` — stubs for lane classification, CS@10 extraction, data transforms (MATC-02, MATC-03)
+- [ ] `tests/unit/match-api.test.ts` — stubs for expanded API response serialization (MATC-01)
 
 ---
 
