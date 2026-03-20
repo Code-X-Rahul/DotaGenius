@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-03-20T13:05:26.439Z"
+stopped_at: "Plan 01-05 Task 1 complete, paused at Task 2 checkpoint:human-verify"
+last_updated: "2026-03-20T13:13:48.606Z"
 last_activity: 2026-03-20 — Plan 01-04 complete (frontend landing + status pages)
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
   percent: 80
 ---
 
@@ -71,6 +71,8 @@ Recent decisions affecting current work:
 - [Plan 01-03]: Export redisConnectionOptions for BullMQ to avoid ioredis version mismatch
 - [Plan 01-04]: Used polling (1s interval) over QueueEvents for SSE -- avoids extra Redis connection and ioredis version conflicts
 - [Plan 01-04]: Dark gaming theme with CSS custom properties for consistent theming
+- [Phase 01-05]: Integration tests guarded with describe.skipIf(!DATABASE_URL) for CI-friendly execution
+- [Phase 01-05]: dev:all uses concurrently for parallel Next.js + worker startup
 
 ### Pending Todos
 
@@ -85,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T13:03:55Z
-Stopped at: Completed 01-04-PLAN.md
-Resume file: .planning/phases/01-replay-pipeline/01-04-SUMMARY.md
+Last session: 2026-03-20T13:13:41.219Z
+Stopped at: Plan 01-05 Task 1 complete, paused at Task 2 checkpoint:human-verify
+Resume file: None
