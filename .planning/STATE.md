@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-20T11:59:35Z"
+last_updated: "2026-03-20T12:25:56.839Z"
 last_activity: 2026-03-20 — Plan 01-01 complete (project foundation)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
-  percent: 5
+  completed_plans: 2
+  percent: 40
 ---
 
 # Project State
@@ -26,27 +26,27 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 1 of 4 (Replay Pipeline)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: Executing
-Last activity: 2026-03-20 — Plan 01-01 complete (project foundation)
+Last activity: 2026-03-20 — Plan 01-02 complete (Steam GC spike -- failed, OpenDota-only)
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 6min
-- Total execution time: 6min
+- Total plans completed: 2
+- Average duration: 5min
+- Total execution time: 10min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-replay-pipeline | 1/5 | 6min | 6min |
+| 01-replay-pipeline | 2/5 | 10min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6min)
+- Last 5 plans: 01-01 (6min), 01-02 (4min)
 - Trend: Starting
 
 *Updated after each plan completion*
@@ -65,6 +65,8 @@ Recent decisions affecting current work:
 - [All]: OpenDota API for meta data — Dotabuff has anti-bot detection and no public API
 - [Plan 01-01]: Used Prisma 6 instead of 7 — v7 has breaking config changes (datasource url removed from schema.prisma)
 - [Plan 01-01]: Used zod v4 with zod/v4 import path
+- [Plan 01-02]: Steam GC spike failed -- pipeline ships OpenDota-only, no GC fallback
+- [Plan 01-02]: Plan 01-03 will NOT include Steam GC integration
 
 ### Pending Todos
 
@@ -72,13 +74,13 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1]: Steam GC fallback (`node-steam-user`) has limited documentation — needs proof-of-concept spike before committing to implementation
+- ~~[Phase 1]: Steam GC fallback (`node-steam-user`) has limited documentation — needs proof-of-concept spike before committing to implementation~~ RESOLVED: Spike completed, GC failed, shipping OpenDota-only
 - [Phase 1]: Unclear how often OpenDota has replay URLs vs. requiring Steam GC; validate with sample match IDs during Phase 1
 - [Phase 1]: Hosting split decision pending (Vercel for Next.js, Railway vs. Fly.io for workers and parser container)
 - [Phase 4]: LLM cost per analysis unknown — establish cost estimate before building AI layer
 
 ## Session Continuity
 
-Last session: 2026-03-20T11:59:35Z
-Stopped at: Completed 01-01-PLAN.md
-Resume file: .planning/phases/01-replay-pipeline/01-01-SUMMARY.md
+Last session: 2026-03-20T12:23:44Z
+Stopped at: Completed 01-02-PLAN.md
+Resume file: .planning/phases/01-replay-pipeline/01-02-SUMMARY.md

@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Project scaffolding, database schema, test infrastructure
-- [ ] 01-02-PLAN.md — Steam GC spike (proof-of-concept for replay_salt retrieval)
+- [x] 01-02-PLAN.md — Steam GC spike (proof-of-concept for replay_salt retrieval) -- RESULT: GC failed, OpenDota-only
 - [ ] 01-03-PLAN.md — Backend pipeline (OpenDota client, parser client, BullMQ worker, API endpoint)
 - [ ] 01-04-PLAN.md — Frontend (landing page, status page, SSE updates)
 - [ ] 01-05-PLAN.md — Integration wiring, integration tests, end-to-end verification
@@ -75,7 +75,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Replay Pipeline | 0/5 | Planning complete | - |
+| 1. Replay Pipeline | 2/5 | Executing | - |
 | 2. Match Overview | 0/TBD | Not started | - |
 | 3. Visualizations | 0/TBD | Not started | - |
 | 4. AI Analysis | 0/TBD | Not started | - |
