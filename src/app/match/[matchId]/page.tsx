@@ -4,18 +4,12 @@ import { useEffect, useState, useCallback, use } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import StatusTimeline from "@/components/StatusTimeline";
+import MatchHeader from "@/components/match/MatchHeader";
+import Scoreboard from "@/components/match/Scoreboard";
 import { useJobStatus } from "@/hooks/useJobStatus";
+import { useFocusPlayer } from "@/hooks/useFocusPlayer";
 import { addRecent } from "@/hooks/useRecentMatches";
-
-interface MatchData {
-  matchId: string;
-  duration?: number;
-  gameMode?: number;
-  status: string;
-  parsedAt?: string;
-  errorMsg?: string;
-  warning?: string;
-}
+import type { MatchResponse } from "@/lib/match-types";
 
 type ErrorType =
   | "replay_expired"
@@ -101,12 +95,13 @@ export default function MatchPage({
   const searchParams = useSearchParams();
   const jobIdParam = searchParams.get("jobId");
 
-  const [matchData, setMatchData] = useState<MatchData | null>(null);
+  const [matchData, setMatchData] = useState<MatchResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [activeJobId, setActiveJobId] = useState<string | null>(jobIdParam);
 
   const jobStatus = useJobStatus(activeJobId);
+  const { focusSlot, setFocus } = useFocusPlayer();
 
   // Fetch match data
   const fetchMatch = useCallback(async () => {
@@ -123,7 +118,7 @@ export default function MatchPage({
         setLoading(false);
         return;
       }
-      const data = (await res.json()) as MatchData;
+      const data = (await res.json()) as MatchResponse;
       setMatchData(data);
       setLoading(false);
     } catch {
@@ -248,48 +243,24 @@ export default function MatchPage({
     );
   }
 
-  // Completed match summary
+  // Completed match overview
   if (matchData && matchData.status === "complete") {
     return (
-      <div className="flex flex-col flex-1 items-center px-6 py-20">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold mb-2">Match Analysis</h1>
-            <p className="text-[var(--muted)] text-sm font-mono">
-              #{matchData.matchId}
-            </p>
-          </div>
+      <div className="flex flex-col flex-1 items-center px-6 py-10">
+        <div className="w-full max-w-6xl space-y-6">
+          <MatchHeader match={matchData} />
 
-          <div className="rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] p-6 space-y-4">
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--muted)]">Status</span>
-              <span className="text-[var(--success)] font-medium">
-                Complete
-              </span>
-            </div>
-            {matchData.duration !== undefined && (
-              <div className="flex justify-between text-sm">
-                <span className="text-[var(--muted)]">Duration</span>
-                <span>{formatDuration(matchData.duration)}</span>
-              </div>
-            )}
-            {matchData.gameMode !== undefined && (
-              <div className="flex justify-between text-sm">
-                <span className="text-[var(--muted)]">Game Mode</span>
-                <span>{gameModeLabel(matchData.gameMode)}</span>
-              </div>
-            )}
-            {matchData.parsedAt && (
-              <div className="flex justify-between text-sm">
-                <span className="text-[var(--muted)]">Analyzed</span>
-                <span>
-                  {new Date(matchData.parsedAt).toLocaleDateString()}
-                </span>
-              </div>
-            )}
-          </div>
+          <Scoreboard
+            players={matchData.players}
+            focusSlot={focusSlot}
+            onFocusChange={setFocus}
+            radiantWin={matchData.radiantWin === true}
+          />
 
-          <div className="mt-6 flex flex-col gap-3 items-center">
+          {/* Laning Breakdown - Plan 03 */}
+          {/* Gold/XP Graphs - Plan 03 */}
+
+          <div className="flex flex-col gap-3 items-center pt-4">
             <button
               onClick={handleReanalyze}
               className="px-6 py-2.5 rounded-lg border border-[var(--card-border)] hover:border-[var(--accent)] text-[var(--foreground)] font-medium text-sm transition-colors"
