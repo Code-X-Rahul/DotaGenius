@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-20T12:25:56.839Z"
-last_activity: 2026-03-20 — Plan 01-01 complete (project foundation)
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-03-20T13:05:26.439Z"
+last_activity: 2026-03-20 — Plan 01-04 complete (frontend landing + status pages)
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
-  percent: 40
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
@@ -26,28 +26,28 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 ## Current Position
 
 Phase: 1 of 4 (Replay Pipeline)
-Plan: 2 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: Executing
-Last activity: 2026-03-20 — Plan 01-02 complete (Steam GC spike -- failed, OpenDota-only)
+Last activity: 2026-03-20 — Plan 01-04 complete (frontend landing + status pages)
 
-Progress: [████░░░░░░] 40%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 4
 - Average duration: 5min
-- Total execution time: 10min
+- Total execution time: 22min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-replay-pipeline | 2/5 | 10min | 5min |
+| 01-replay-pipeline | 4/5 | 22min | 5.5min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6min), 01-02 (4min)
-- Trend: Starting
+- Last 5 plans: 01-01 (6min), 01-02 (4min), 01-03 (6min), 01-04 (6min)
+- Trend: Consistent
 
 *Updated after each plan completion*
 
@@ -67,6 +67,10 @@ Recent decisions affecting current work:
 - [Plan 01-01]: Used zod v4 with zod/v4 import path
 - [Plan 01-02]: Steam GC spike failed -- pipeline ships OpenDota-only, no GC fallback
 - [Plan 01-02]: Plan 01-03 will NOT include Steam GC integration
+- [Plan 01-03]: OpenDota-only replay URL source -- no GC fallback in worker
+- [Plan 01-03]: Export redisConnectionOptions for BullMQ to avoid ioredis version mismatch
+- [Plan 01-04]: Used polling (1s interval) over QueueEvents for SSE -- avoids extra Redis connection and ioredis version conflicts
+- [Plan 01-04]: Dark gaming theme with CSS custom properties for consistent theming
 
 ### Pending Todos
 
@@ -81,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T12:23:44Z
-Stopped at: Completed 01-02-PLAN.md
-Resume file: .planning/phases/01-replay-pipeline/01-02-SUMMARY.md
+Last session: 2026-03-20T13:03:55Z
+Stopped at: Completed 01-04-PLAN.md
+Resume file: .planning/phases/01-replay-pipeline/01-04-SUMMARY.md

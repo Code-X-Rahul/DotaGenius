@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Parsed replay data (hero positions, combat logs, entity snapshots) is queryable in PostgreSQL after job completes
   3. System rejects expired Match IDs (older than ~10 days) with a clear error message before attempting download
   4. Async job queue handles parsing without blocking the web server — submitting a Match ID returns immediately
-**Plans:** 5 plans
+**Plans:** 4/5 plans executed
 
 Plans:
 - [x] 01-01-PLAN.md — Project scaffolding, database schema, test infrastructure
@@ -75,7 +75,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Replay Pipeline | 2/5 | Executing | - |
+| 1. Replay Pipeline | 4/5 | In Progress|  |
 | 2. Match Overview | 0/TBD | Not started | - |
 | 3. Visualizations | 0/TBD | Not started | - |
 | 4. AI Analysis | 0/TBD | Not started | - |
