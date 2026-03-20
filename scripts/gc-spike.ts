@@ -18,12 +18,15 @@
 import { getReplaySalt, buildReplayUrl } from "../src/lib/steam-gc";
 
 // Load .env if available (best-effort, no hard dependency)
-try {
-  const { config } = await import("dotenv");
-  config();
-} catch {
-  // dotenv not installed; rely on environment variables
-}
+const loadENV = async () => {
+  try {
+    const { config } = await import("dotenv");
+    config();
+  } catch {
+    // dotenv not installed; rely on environment variables
+  }
+};
+loadENV();
 
 // A well-known public match ID as fallback for testing
 const DEFAULT_MATCH_ID = "8145498311";
@@ -47,11 +50,11 @@ async function main() {
 
     if (!result) {
       console.error(
-        "\nGC RESULT: FAILED - Match not found or replay unavailable"
+        "\nGC RESULT: FAILED - Match not found or replay unavailable",
       );
       console.error(
         "Recommendation: Ship with OpenDota-only mode. " +
-          "The Steam GC fallback is not viable for this match."
+          "The Steam GC fallback is not viable for this match.",
       );
       process.exit(1);
     }
@@ -63,27 +66,20 @@ async function main() {
     console.log(`  replaySalt:  ${replaySalt}`);
     console.log();
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     console.error(`\nGC RESULT: ERROR - ${message}`);
     console.error();
 
     if (message.includes("STEAM_USERNAME")) {
       console.error(
-        "Setup required: Set STEAM_USERNAME and STEAM_PASSWORD in your .env file."
+        "Setup required: Set STEAM_USERNAME and STEAM_PASSWORD in your .env file.",
       );
       console.error("See docs/steam-bot-setup.md for instructions.");
     } else if (message.includes("login failed")) {
-      console.error(
-        "Authentication failed. Check your Steam credentials."
-      );
-      console.error(
-        "Make sure Steam Guard is disabled on the bot account."
-      );
+      console.error("Authentication failed. Check your Steam credentials.");
+      console.error("Make sure Steam Guard is disabled on the bot account.");
     } else if (message.includes("timed out")) {
-      console.error(
-        "The GC did not respond in time. This could indicate:"
-      );
+      console.error("The GC did not respond in time. This could indicate:");
       console.error("  - Steam servers are under load");
       console.error("  - The bot account is being rate-limited");
       console.error("  - Network connectivity issues");
@@ -91,7 +87,7 @@ async function main() {
 
     console.error();
     console.error(
-      "Recommendation: If this error persists, ship with OpenDota-only mode."
+      "Recommendation: If this error persists, ship with OpenDota-only mode.",
     );
     process.exit(1);
   }
@@ -126,42 +122,39 @@ async function main() {
       console.log(`  HEAD Status:  ${status}`);
       console.log();
       console.log(
-        "Recommendation: Include GC fallback in the replay pipeline (Plan 03)."
+        "Recommendation: Include GC fallback in the replay pipeline (Plan 03).",
       );
     } else if (status === 404) {
       console.log();
       console.log("=== SPIKE RESULT: PARTIAL SUCCESS ===");
       console.log(
-        "GC returned replay salt, but the replay file is not available at the CDN."
+        "GC returned replay salt, but the replay file is not available at the CDN.",
       );
       console.log(
-        "This likely means the replay has expired (Valve deletes replays after ~10 days)."
+        "This likely means the replay has expired (Valve deletes replays after ~10 days).",
       );
       console.log();
       console.log(
-        "Recommendation: Try again with a very recent match ID (< 24 hours old)."
+        "Recommendation: Try again with a very recent match ID (< 24 hours old).",
       );
     } else {
       console.log();
       console.log("=== SPIKE RESULT: UNCERTAIN ===");
+      console.log(`Unexpected HTTP status ${status} from replay CDN.`);
       console.log(
-        `Unexpected HTTP status ${status} from replay CDN.`
-      );
-      console.log(
-        "Recommendation: Investigate further or try a different match ID."
+        "Recommendation: Investigate further or try a different match ID.",
       );
     }
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     console.error(`  HEAD request failed: ${message}`);
     console.log();
     console.log("=== SPIKE RESULT: PARTIAL SUCCESS ===");
     console.log(
-      "GC returned data, but could not validate the URL (network issue)."
+      "GC returned data, but could not validate the URL (network issue).",
     );
     console.log(
-      "Recommendation: The GC path works; URL validation can be retried."
+      "Recommendation: The GC path works; URL validation can be retried.",
     );
   }
 }

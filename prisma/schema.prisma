@@ -16,12 +16,26 @@ model Match {
   radiantWin  Boolean   @map("radiant_win")
   cluster     Int
   replayUrl   String?   @map("replay_url")
-  demFilePath String?   @map("dem_file_path")
   parsedAt    DateTime? @map("parsed_at")
   status      String    @default("pending")
   errorMsg    String?   @map("error_msg")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Phase 2: Match-level stats
+  radiantScore  Int?   @map("radiant_score")
+  direScore     Int?   @map("dire_score")
+  firstBloodTime Int?  @map("first_blood_time")
+  lobbyType     Int?   @map("lobby_type")
+  patch         Int?
+
+  // Phase 2: Gold/XP advantage arrays (per-minute, Radiant - Dire)
+  radiantGoldAdv Json? @map("radiant_gold_adv") // number[]
+  radiantXpAdv   Json? @map("radiant_xp_adv")   // number[]
+
+  // Phase 3: Match-level events (stored as JSON for flexible querying)
+  objectives  Json? // ObjectiveEvent[]
+  teamfights  Json? // TeamfightEvent[]
 
   players           Player[]
   combatLogEvents   CombatLogEvent[]
@@ -46,7 +60,71 @@ model Player {
   heroDamage  Int     @map("hero_damage")
   towerDamage Int     @map("tower_damage")
   heroHealing Int     @map("hero_healing")
-  items       Json
+  items       Json    // [item_0..item_5]
+
+  // Phase 2: Identity & team
+  personaname String?
+  isRadiant   Boolean @default(true) @map("is_radiant")
+  level       Int     @default(0)
+  netWorth    Int     @default(0) @map("net_worth")
+  totalGold   Int     @default(0) @map("total_gold")
+  totalXp     Int     @default(0) @map("total_xp")
+  goldSpent   Int     @default(0) @map("gold_spent")
+
+  // Phase 2: Items (extended)
+  itemNeutral  Int?   @map("item_neutral")
+  backpack0    Int?   @map("backpack_0")
+  backpack1    Int?   @map("backpack_1")
+  backpack2    Int?   @map("backpack_2")
+
+  // Phase 2: Laning
+  lane             Int?
+  laneRole         Int?   @map("lane_role")
+  laneEfficiency   Float? @map("lane_efficiency")
+  isRoaming        Boolean @default(false) @map("is_roaming")
+
+  // Phase 2: Time-series (per-minute arrays stored as JSON)
+  goldT  Json? @map("gold_t")  // number[] - gold at each minute
+  xpT    Json? @map("xp_t")    // number[] - xp at each minute
+  lhT    Json? @map("lh_t")    // number[] - last hits at each minute
+  dnT    Json? @map("dn_t")    // number[] - denies at each minute
+
+  // Phase 2: Additional stats
+  kda              Float?
+  killsPerMin      Float? @map("kills_per_min")
+  heroKills        Int?   @map("hero_kills")
+  towerKills       Int?   @map("tower_kills")
+  courierKills     Int?   @map("courier_kills")
+  observerKills    Int?   @map("observer_kills")
+  sentryKills      Int?   @map("sentry_kills")
+  roshanKills      Int?   @map("roshan_kills")
+  campsStacked     Int?   @map("camps_stacked")
+  stuns            Float?
+  actionsPerMin    Int?   @map("actions_per_min")
+  teamfightParticipation Float? @map("teamfight_participation")
+  buybackCount     Int?   @map("buyback_count")
+  obsPlaced        Int?   @map("obs_placed")
+  senPlaced        Int?   @map("sen_placed")
+  rankTier         Int?   @map("rank_tier")
+
+  // Phase 2: Benchmarks (percentile comparisons)
+  benchmarks  Json?  // { gold_per_min: {raw, pct}, ... }
+
+  // Phase 3: Spatial data
+  lanePos  Json? @map("lane_pos")  // { y: { x: count } } heatmap
+
+  // Phase 3: Ward placement
+  obs     Json?  // observer ward positions
+  sen     Json?  // sentry ward positions
+
+  // Phase 4: Detailed logs
+  killsLog     Json? @map("kills_log")       // [{time, key}]
+  purchaseLog  Json? @map("purchase_log")     // [{time, key}]
+  runesLog     Json? @map("runes_log")        // [{time, key}]
+  abilityUpgrades Json? @map("ability_upgrades") // [ability_id, ...]
+  damage       Json?  // { target: amount }
+  damageTargets Json? @map("damage_targets") // { hero: { ability: amount } }
+  damageTaken   Json? @map("damage_taken")   // { source: amount }
 
   match Match @relation(fields: [matchId], references: [matchId])
 

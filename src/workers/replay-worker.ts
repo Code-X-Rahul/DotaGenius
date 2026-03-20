@@ -1,16 +1,19 @@
 import { Worker, Job } from "bullmq";
 import { redisConnectionOptions } from "../lib/redis";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/db";
 import { getMatch, isReplayLikelyExpired } from "../lib/opendota";
-import { parseReplay, ParsedEvent } from "../lib/parser";
+import type { OpenDotaPlayer } from "../lib/opendota";
 import type { ReplayJobData } from "../lib/queue";
 
 /**
  * Replay pipeline worker -- runs as a SEPARATE process from Next.js.
  * Start with: npx tsx src/workers/replay-worker.ts
  *
- * Flow: getMatch (OpenDota) -> parseReplay (odota/parser) -> store in PostgreSQL
- * No Steam GC fallback -- OpenDota is the sole replay URL source.
+ * Flow: getMatch (OpenDota) -> store all data in PostgreSQL
+ * OpenDota API returns both match metadata AND parsed replay data
+ * (gold_t, xp_t, lane_pos, kills_log, etc.) for matches it has processed.
+ * No Steam GC fallback -- OpenDota is the sole data source.
  */
 
 interface WorkerProgress {
@@ -19,65 +22,98 @@ interface WorkerProgress {
   message?: string;
 }
 
-function extractCombatLogEvents(
-  events: ParsedEvent[],
-  matchId: bigint
-): Array<{
-  matchId: bigint;
-  gameTime: number;
-  eventType: string;
-  attackerHero: string | null;
-  targetHero: string | null;
-  inflictor: string | null;
-  value: number | null;
-  isAttackerHero: boolean;
-  isTargetHero: boolean;
-}> {
-  return events
-    .filter((e) => e.type === "combat_log" && typeof e.time === "number")
-    .map((e) => ({
-      matchId,
-      gameTime: e.time as number,
-      eventType: (e.event as string) || "unknown",
-      attackerHero: (e.attackername as string) || null,
-      targetHero: (e.targetname as string) || null,
-      inflictor: (e.inflictor as string) || null,
-      value: typeof e.value === "number" ? e.value : null,
-      isAttackerHero: (e.attackerhero as boolean) || false,
-      isTargetHero: (e.targethero as boolean) || false,
-    }));
+/** Convert a value to Prisma-compatible Json: use DbNull for null/undefined, otherwise pass through */
+function jsonOrNull(value: unknown): Prisma.InputJsonValue | typeof Prisma.DbNull {
+  return value == null ? Prisma.DbNull : (value as Prisma.InputJsonValue);
 }
 
-function extractPositionSnapshots(
-  events: ParsedEvent[],
-  matchId: bigint
-): Array<{
-  matchId: bigint;
-  gameTime: number;
-  heroId: number;
-  x: number;
-  y: number;
-  gold: number;
-  xp: number;
-}> {
-  return events
-    .filter(
-      (e) =>
-        e.type === "hero_position" &&
-        typeof e.time === "number" &&
-        typeof e.hero_id === "number"
-    )
-    // Filter to every 10 seconds (allow for slight timing drift)
-    .filter((e) => (e.time as number) % 10 < 2)
-    .map((e) => ({
-      matchId,
-      gameTime: e.time as number,
-      heroId: e.hero_id as number,
-      x: (e.x as number) || 0,
-      y: (e.y as number) || 0,
-      gold: (e.gold as number) || 0,
-      xp: (e.xp as number) || 0,
-    }));
+function buildPlayerData(player: OpenDotaPlayer, matchIdBigInt: bigint) {
+  return {
+    matchId: matchIdBigInt,
+    playerSlot: player.player_slot,
+    heroId: player.hero_id,
+    accountId: player.account_id ? BigInt(player.account_id) : null,
+    kills: player.kills,
+    deaths: player.deaths,
+    assists: player.assists,
+    goldPerMin: player.gold_per_min,
+    xpPerMin: player.xp_per_min,
+    lastHits: player.last_hits,
+    denies: player.denies,
+    heroDamage: player.hero_damage,
+    towerDamage: player.tower_damage,
+    heroHealing: player.hero_healing,
+    items: [
+      player.item_0 ?? 0,
+      player.item_1 ?? 0,
+      player.item_2 ?? 0,
+      player.item_3 ?? 0,
+      player.item_4 ?? 0,
+      player.item_5 ?? 0,
+    ],
+
+    // Identity & team
+    personaname: player.personaname ?? null,
+    isRadiant: player.isRadiant ?? player.player_slot < 128,
+    level: player.level ?? 0,
+    netWorth: player.net_worth ?? 0,
+    totalGold: player.total_gold ?? 0,
+    totalXp: player.total_xp ?? 0,
+    goldSpent: player.gold_spent ?? 0,
+
+    // Extended items
+    itemNeutral: player.item_neutral ?? null,
+    backpack0: player.backpack_0 ?? null,
+    backpack1: player.backpack_1 ?? null,
+    backpack2: player.backpack_2 ?? null,
+
+    // Laning
+    lane: player.lane ?? null,
+    laneRole: player.lane_role ?? null,
+    laneEfficiency: player.lane_efficiency ?? null,
+    isRoaming: player.is_roaming ?? false,
+
+    // Time-series (Json fields — use jsonOrNull for Prisma compatibility)
+    goldT: jsonOrNull(player.gold_t),
+    xpT: jsonOrNull(player.xp_t),
+    lhT: jsonOrNull(player.lh_t),
+    dnT: jsonOrNull(player.dn_t),
+
+    // Stats
+    kda: player.kda ?? null,
+    killsPerMin: player.kills_per_min ?? null,
+    heroKills: player.hero_kills ?? null,
+    towerKills: player.tower_kills ?? null,
+    courierKills: player.courier_kills ?? null,
+    observerKills: player.observer_kills ?? null,
+    sentryKills: player.sentry_kills ?? null,
+    roshanKills: player.roshan_kills ?? null,
+    campsStacked: player.camps_stacked ?? null,
+    stuns: player.stuns ?? null,
+    actionsPerMin: player.actions_per_min ?? null,
+    teamfightParticipation: player.teamfight_participation ?? null,
+    buybackCount: player.buyback_count ?? null,
+    obsPlaced: player.obs_placed ?? null,
+    senPlaced: player.sen_placed ?? null,
+    rankTier: player.rank_tier ?? null,
+
+    // Benchmarks (Json)
+    benchmarks: jsonOrNull(player.benchmarks),
+
+    // Spatial (Json)
+    lanePos: jsonOrNull(player.lane_pos),
+    obs: jsonOrNull(player.obs),
+    sen: jsonOrNull(player.sen),
+
+    // Detailed logs (Json)
+    killsLog: jsonOrNull(player.kills_log),
+    purchaseLog: jsonOrNull(player.purchase_log),
+    runesLog: jsonOrNull(player.runes_log),
+    abilityUpgrades: jsonOrNull(player.ability_upgrades_arr),
+    damage: jsonOrNull(player.damage),
+    damageTargets: jsonOrNull(player.damage_targets),
+    damageTaken: jsonOrNull(player.damage_taken),
+  };
 }
 
 async function processReplayJob(job: Job<ReplayJobData>): Promise<void> {
@@ -95,12 +131,28 @@ async function processReplayJob(job: Job<ReplayJobData>): Promise<void> {
   // Check for replay expiry warning (still attempt, but log)
   if (isReplayLikelyExpired(matchData.start_time)) {
     await job.log(
-      `Warning: Match ${matchId} is older than 10 days, replay may be unavailable`
+      `Warning: Match ${matchId} is older than 10 days, replay may be unavailable`,
     );
   }
 
-  // Create/update Match record with status 'downloading'
+  // Verify OpenDota has parsed data (gold_t exists on players)
+  const hasParsedData = matchData.players.some((p) => p.gold_t && p.gold_t.length > 0);
+  if (!hasParsedData) {
+    await job.log(
+      `Warning: Match ${matchId} has no parsed replay data from OpenDota. Stats will be limited.`,
+    );
+  }
+
   const matchIdBigInt = BigInt(matchId);
+
+  // Stage 2: Mark as parsing
+  await job.updateProgress({
+    stage: "parsing",
+    percent: 30,
+    message: "Processing match data",
+  } satisfies WorkerProgress);
+
+  // Create/update Match record
   await prisma.match.upsert({
     where: { matchId: matchIdBigInt },
     create: {
@@ -110,46 +162,43 @@ async function processReplayJob(job: Job<ReplayJobData>): Promise<void> {
       gameMode: matchData.game_mode,
       radiantWin: matchData.radiant_win,
       cluster: matchData.cluster,
-      status: "downloading",
+      status: "parsing",
+      radiantScore: matchData.radiant_score ?? null,
+      direScore: matchData.dire_score ?? null,
+      firstBloodTime: matchData.first_blood_time ?? null,
+      lobbyType: matchData.lobby_type ?? null,
+      patch: matchData.patch ?? null,
+      radiantGoldAdv: jsonOrNull(matchData.radiant_gold_adv),
+      radiantXpAdv: jsonOrNull(matchData.radiant_xp_adv),
+      objectives: jsonOrNull(matchData.objectives),
+      teamfights: jsonOrNull(matchData.teamfights),
     },
     update: {
-      status: "downloading",
+      status: "parsing",
       errorMsg: null,
+      radiantScore: matchData.radiant_score ?? null,
+      direScore: matchData.dire_score ?? null,
+      firstBloodTime: matchData.first_blood_time ?? null,
+      lobbyType: matchData.lobby_type ?? null,
+      patch: matchData.patch ?? null,
+      radiantGoldAdv: jsonOrNull(matchData.radiant_gold_adv),
+      radiantXpAdv: jsonOrNull(matchData.radiant_xp_adv),
+      objectives: jsonOrNull(matchData.objectives),
+      teamfights: jsonOrNull(matchData.teamfights),
     },
   });
 
-  // Determine replay URL -- OpenDota only (no GC fallback)
-  const replayUrl = matchData.replay_url;
-  if (!replayUrl) {
-    throw new Error(
-      `Replay URL not available for match ${matchId}. OpenDota has not parsed this match.`
-    );
-  }
-
-  // Stage 2: Parse replay via odota/parser
-  await job.updateProgress({
-    stage: "parsing",
-    percent: 30,
-    message: "Sending replay to parser",
-  } satisfies WorkerProgress);
-
-  const events = await parseReplay(replayUrl);
-
-  await prisma.match.update({
-    where: { matchId: matchIdBigInt },
-    data: { status: "parsing" },
-  });
-
-  // Stage 3: Store parsed data in PostgreSQL
+  // Stage 3: Store player data
   await job.updateProgress({
     stage: "storing",
     percent: 60,
-    message: "Storing parsed data",
+    message: "Storing player data",
   } satisfies WorkerProgress);
 
   await prisma.$transaction(async (tx) => {
-    // Upsert player records from OpenDota match data
+    // Upsert all 10 player records with full data
     for (const player of matchData.players) {
+      const data = buildPlayerData(player, matchIdBigInt);
       await tx.player.upsert({
         where: {
           matchId_playerSlot: {
@@ -157,76 +206,60 @@ async function processReplayJob(job: Job<ReplayJobData>): Promise<void> {
             playerSlot: player.player_slot,
           },
         },
-        create: {
+        create: data,
+        update: data,
+      });
+    }
+
+    // Store combat events from kills_log + objectives
+    const combatRecords: Array<{
+      matchId: bigint;
+      gameTime: number;
+      eventType: string;
+      attackerHero: string | null;
+      targetHero: string | null;
+      inflictor: string | null;
+      value: number | null;
+      isAttackerHero: boolean;
+      isTargetHero: boolean;
+    }> = [];
+
+    // Player kills
+    for (const player of matchData.players) {
+      const heroName = `hero_${player.hero_id}`;
+      for (const kill of player.kills_log ?? []) {
+        combatRecords.push({
           matchId: matchIdBigInt,
-          playerSlot: player.player_slot,
-          heroId: player.hero_id,
-          accountId: player.account_id ? BigInt(player.account_id) : null,
-          kills: player.kills,
-          deaths: player.deaths,
-          assists: player.assists,
-          goldPerMin: player.gold_per_min,
-          xpPerMin: player.xp_per_min,
-          lastHits: player.last_hits,
-          denies: player.denies,
-          heroDamage: player.hero_damage,
-          towerDamage: player.tower_damage,
-          heroHealing: player.hero_healing,
-          items: [
-            player.item_0 ?? 0,
-            player.item_1 ?? 0,
-            player.item_2 ?? 0,
-            player.item_3 ?? 0,
-            player.item_4 ?? 0,
-            player.item_5 ?? 0,
-          ],
-        },
-        update: {
-          heroId: player.hero_id,
-          kills: player.kills,
-          deaths: player.deaths,
-          assists: player.assists,
-          goldPerMin: player.gold_per_min,
-          xpPerMin: player.xp_per_min,
-          lastHits: player.last_hits,
-          denies: player.denies,
-          heroDamage: player.hero_damage,
-          towerDamage: player.tower_damage,
-          heroHealing: player.hero_healing,
-          items: [
-            player.item_0 ?? 0,
-            player.item_1 ?? 0,
-            player.item_2 ?? 0,
-            player.item_3 ?? 0,
-            player.item_4 ?? 0,
-            player.item_5 ?? 0,
-          ],
-        },
+          gameTime: kill.time,
+          eventType: "kill",
+          attackerHero: heroName,
+          targetHero: kill.key || null,
+          inflictor: null,
+          value: null,
+          isAttackerHero: true,
+          isTargetHero: true,
+        });
+      }
+    }
+
+    // Match objectives (towers, first blood, roshan, etc.)
+    for (const obj of matchData.objectives ?? []) {
+      combatRecords.push({
+        matchId: matchIdBigInt,
+        gameTime: obj.time,
+        eventType: obj.type,
+        attackerHero: obj.unit ?? null,
+        targetHero: obj.key ?? null,
+        inflictor: null,
+        value: obj.value ?? null,
+        isAttackerHero: false,
+        isTargetHero: false,
       });
     }
 
-    // Batch insert combat log events
-    const combatLogRecords = extractCombatLogEvents(events, matchIdBigInt);
-    if (combatLogRecords.length > 0) {
-      // Delete existing combat log events for re-parse scenario
-      await tx.combatLogEvent.deleteMany({
-        where: { matchId: matchIdBigInt },
-      });
-      await tx.combatLogEvent.createMany({
-        data: combatLogRecords,
-      });
-    }
-
-    // Batch insert position snapshots
-    const positionRecords = extractPositionSnapshots(events, matchIdBigInt);
-    if (positionRecords.length > 0) {
-      // Delete existing snapshots for re-parse scenario
-      await tx.positionSnapshot.deleteMany({
-        where: { matchId: matchIdBigInt },
-      });
-      await tx.positionSnapshot.createMany({
-        data: positionRecords,
-      });
+    if (combatRecords.length > 0) {
+      await tx.combatLogEvent.deleteMany({ where: { matchId: matchIdBigInt } });
+      await tx.combatLogEvent.createMany({ data: combatRecords });
     }
   });
 
@@ -236,14 +269,20 @@ async function processReplayJob(job: Job<ReplayJobData>): Promise<void> {
     data: {
       status: "complete",
       parsedAt: new Date(),
-      replayUrl,
+      replayUrl: matchData.replay_url ?? null,
     },
   });
+
+  const playerCount = matchData.players.length;
+  const hasGraphData = hasParsedData ? "yes" : "no";
+  console.log(
+    `[match ${matchId}] Complete: ${playerCount} players, graph data: ${hasGraphData}`,
+  );
 
   await job.updateProgress({
     stage: "complete",
     percent: 100,
-    message: "Replay processed successfully",
+    message: "Match data stored successfully",
   } satisfies WorkerProgress);
 }
 
@@ -260,8 +299,7 @@ const worker = new Worker<ReplayJobData>(
           where: { matchId: BigInt(job.data.matchId) },
           data: {
             status: "failed",
-            errorMsg:
-              error instanceof Error ? error.message : "Unknown error",
+            errorMsg: error instanceof Error ? error.message : "Unknown error",
           },
         });
       } catch {
@@ -273,7 +311,7 @@ const worker = new Worker<ReplayJobData>(
   {
     connection: redisConnectionOptions,
     concurrency: 2,
-  }
+  },
 );
 
 worker.on("completed", (job) => {
@@ -282,7 +320,7 @@ worker.on("completed", (job) => {
 
 worker.on("failed", (job, err) => {
   console.error(
-    `Job ${job?.id} failed for match ${job?.data.matchId}: ${err.message}`
+    `Job ${job?.id} failed for match ${job?.data.matchId}: ${err.message}`,
   );
 });
 
