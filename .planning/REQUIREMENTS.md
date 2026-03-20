@@ -10,7 +10,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Replay Pipeline
 
 - [x] **PIPE-01**: User can enter a Match ID and system downloads the .dem replay file
-- [ ] **PIPE-02**: System parses .dem file to extract hero positions, combat logs, and entity snapshots
+- [x] **PIPE-02**: System parses .dem file to extract hero positions, combat logs, and entity snapshots
 - [x] **PIPE-03**: Parsed data is stored in PostgreSQL for fast retrieval
 
 ### Match Overview
@@ -71,7 +71,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | PIPE-01 | Phase 1 | Complete |
-| PIPE-02 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Complete |
 | PIPE-03 | Phase 1 | Complete |
 | MATC-01 | Phase 2 | Pending |
 | MATC-02 | Phase 2 | Pending |
