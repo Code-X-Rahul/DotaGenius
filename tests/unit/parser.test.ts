@@ -88,7 +88,8 @@ describe("Parser client", () => {
         "http://replay236.valve.net/570/8583844960_1234567890.dem.bz2";
       await parseReplay(replayUrl);
 
-      const fetchUrl = mockFetch.mock.calls[0][0];
+      const lastCall = mockFetch.mock.calls[mockFetch.mock.calls.length - 1];
+      const fetchUrl = lastCall[0];
       expect(fetchUrl).toContain("/blob?replay_url=");
       expect(fetchUrl).toContain(encodeURIComponent(replayUrl));
     });
