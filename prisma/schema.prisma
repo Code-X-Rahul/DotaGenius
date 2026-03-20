@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Match {
+  id          String    @id @default(cuid())
+  matchId     BigInt    @unique @map("match_id")
+  duration    Int
+  startTime   DateTime  @map("start_time")
+  gameMode    Int       @map("game_mode")
+  radiantWin  Boolean   @map("radiant_win")
+  cluster     Int
+  replayUrl   String?   @map("replay_url")
+  demFilePath String?   @map("dem_file_path")
+  parsedAt    DateTime? @map("parsed_at")
+  status      String    @default("pending")
+  errorMsg    String?   @map("error_msg")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  players           Player[]
+  combatLogEvents   CombatLogEvent[]
+  positionSnapshots PositionSnapshot[]
+
+  @@map("matches")
+}
+
+model Player {
+  id          String  @id @default(cuid())
+  matchId     BigInt  @map("match_id")
+  playerSlot  Int     @map("player_slot")
+  heroId      Int     @map("hero_id")
+  accountId   BigInt? @map("account_id")
+  kills       Int     @default(0)
+  deaths      Int     @default(0)
+  assists     Int     @default(0)
+  goldPerMin  Int     @map("gold_per_min")
+  xpPerMin    Int     @map("xp_per_min")
+  lastHits    Int     @map("last_hits")
+  denies      Int
+  heroDamage  Int     @map("hero_damage")
+  towerDamage Int     @map("tower_damage")
+  heroHealing Int     @map("hero_healing")
+  items       Json
+
+  match Match @relation(fields: [matchId], references: [matchId])
+
+  @@unique([matchId, playerSlot])
+  @@index([matchId])
+  @@map("players")
+}
+
+model CombatLogEvent {
+  id             String  @id @default(cuid())
+  matchId        BigInt  @map("match_id")
+  gameTime       Int     @map("game_time")
+  eventType      String  @map("event_type")
+  attackerHero   String? @map("attacker_hero")
+  targetHero     String? @map("target_hero")
+  inflictor      String?
+  value          Int?
+  isAttackerHero Boolean @default(false) @map("is_attacker_hero")
+  isTargetHero   Boolean @default(false) @map("is_target_hero")
+
+  match Match @relation(fields: [matchId], references: [matchId])
+
+  @@index([matchId, gameTime])
+  @@index([matchId, eventType])
+  @@map("combat_log_events")
+}
+
+model PositionSnapshot {
+  id       String @id @default(cuid())
+  matchId  BigInt @map("match_id")
+  gameTime Int    @map("game_time")
+  heroId   Int    @map("hero_id")
+  x        Float
+  y        Float
+  gold     Int
+  xp       Int
+
+  match Match @relation(fields: [matchId], references: [matchId])
+
+  @@index([matchId, gameTime])
+  @@index([matchId, heroId])
+  @@map("position_snapshots")
+}

@@ -1,0 +1,10 @@
+{"type":"metadata","match_id":8583844960,"game_mode":22,"radiant_win":true,"duration":2847}
+{"type":"combat_log","time":120,"event":"damage","attackername":"npc_dota_hero_antimage","targetname":"npc_dota_hero_axe","inflictor":"","value":45,"attackerhero":true,"targethero":true}
+{"type":"combat_log","time":125,"event":"heal","attackername":"npc_dota_hero_dazzle","targetname":"npc_dota_hero_antimage","inflictor":"shadow_wave","value":140,"attackerhero":true,"targethero":true}
+{"type":"combat_log","time":130,"event":"damage","attackername":"npc_dota_hero_lina","targetname":"npc_dota_hero_pudge","inflictor":"laguna_blade","value":850,"attackerhero":true,"targethero":true}
+{"type":"combat_log","time":135,"event":"item_use","attackername":"npc_dota_hero_antimage","targetname":"","inflictor":"blink","value":0,"attackerhero":true,"targethero":false}
+{"type":"hero_position","time":120,"hero_id":1,"x":128.5,"y":64.2,"gold":2450,"xp":3200}
+{"type":"hero_position","time":120,"hero_id":6,"x":96.3,"y":112.7,"gold":1890,"xp":2800}
+{"type":"entity_state","time":130,"hero_id":1,"level":8,"hp":1200,"max_hp":1450,"mana":320,"max_mana":560}
+{"type":"combat_log","time":300,"event":"kill","attackername":"npc_dota_hero_antimage","targetname":"npc_dota_hero_axe","inflictor":"","value":0,"attackerhero":true,"targethero":true}
+{"type":"hero_position","time":300,"hero_id":1,"x":145.2,"y":78.9,"gold":3100,"xp":4500}
