@@ -125,9 +125,18 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       replayUrl: match.replayUrl,
       parsedAt: match.parsedAt,
       errorMsg: match.errorMsg,
+      // Phase 2: Match-level fields
+      radiantScore: match.radiantScore,
+      direScore: match.direScore,
+      firstBloodTime: match.firstBloodTime,
+      lobbyType: match.lobbyType,
+      radiantGoldAdv: match.radiantGoldAdv,
+      radiantXpAdv: match.radiantXpAdv,
+      objectives: match.objectives,
       players:
         match.status === "complete"
           ? match.players.map((p) => ({
+              // Existing fields
               heroId: p.heroId,
               playerSlot: p.playerSlot,
               accountId: p.accountId?.toString() ?? null,
@@ -142,6 +151,32 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
               towerDamage: p.towerDamage,
               heroHealing: p.heroHealing,
               items: p.items,
+              // Phase 2: Identity & team
+              personaname: p.personaname,
+              isRadiant: p.isRadiant,
+              level: p.level,
+              netWorth: p.netWorth,
+              itemNeutral: p.itemNeutral,
+              // Phase 2: Laning
+              lane: p.lane,
+              laneRole: p.laneRole,
+              laneEfficiency: p.laneEfficiency,
+              isRoaming: p.isRoaming,
+              // Phase 2: Time-series arrays
+              goldT: p.goldT,
+              xpT: p.xpT,
+              lhT: p.lhT,
+              dnT: p.dnT,
+              // Phase 2: Benchmarks & stats
+              benchmarks: p.benchmarks,
+              obsPlaced: p.obsPlaced,
+              senPlaced: p.senPlaced,
+              // Phase 2: Detail fields
+              purchaseLog: p.purchaseLog,
+              abilityUpgrades: p.abilityUpgrades,
+              damage: p.damage,
+              damageTaken: p.damageTaken,
+              runesLog: p.runesLog,
             }))
           : [],
     });

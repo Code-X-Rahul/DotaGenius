@@ -15,11 +15,11 @@ const heroesMap = heroes as Record<string, {
   icon: string;
 }>;
 
-const itemsMap = items as Record<string, {
+const itemsMap = items as unknown as Record<string, {
   id: number;
   dname?: string;
   img?: string;
-  cost?: number;
+  cost?: number | null;
 }>;
 
 const lobbyTypeMap = lobby_type as Record<string, { id: number; name: string }>;
